@@ -22,7 +22,6 @@ async def create_upload_file(file: UploadFile = File(...)) -> JSONResponse:
     return JSONResponse(status_code=200, content={"description": description})
 
 
-
-if __name__ == "__main__":
+def run():
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
