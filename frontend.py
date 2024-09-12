@@ -1,7 +1,9 @@
 import streamlit as st
 import requests
 import pandas as pd
+from backend import run
 
+run()
 
 st.title('Veri Analizi Uygulaması')
 
