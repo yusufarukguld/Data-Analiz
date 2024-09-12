@@ -1,9 +1,6 @@
 import streamlit as st
 import requests
 import pandas as pd
-from backend import run
-
-run()
 
 st.title('Veri Analizi Uygulaması')
 
@@ -21,18 +18,28 @@ Hizmetlerimizin sunduğu temel avantajlardan bazıları şunlardır:
 Bu, sunduğumuz hizmetlerin en basit gösterimidir. Daha detaylı analizler ve çözümlerle işletmenizi en iyi hale getirmek için buradayız.
 """)
 
-
-uploaded_file = st.file_uploader("Dosya Seçiniz", type=['csv', 'xlsx'], )
+uploaded_file = st.file_uploader("Dosya yükleyin", type=['csv', 'xlsx'])
 if uploaded_file is not None:
-    # Backend'e dosyayı gönderme
-    print(uploaded_file)
-    files = {'file': uploaded_file}
-    response = requests.post("http://127.0.0.1:8000/upload", files=files)
-    if response.status_code == 200:
-        # Sonuçları alıp gösterme
-        description = pd.read_json(response.json()['description'])
-        st.write(description)
+    # Dosyanın uzantısına göre veriyi oku
+    if uploaded_file.name.endswith('.csv'):
+        df = pd.read_csv(uploaded_file)
+    elif uploaded_file.name.endswith('.xlsx'):
+        df = pd.read_excel(uploaded_file)
     else:
-        st.error("An error occurred. " + response.json()['message'])
+        st.error("Desteklenmeyen dosya formatı.")
+        st.stop()
 
+    # Veri çerçevesini göster
+    st.write("Yüklenen Veri:", df)
+
+    # Temel istatistikleri hesapla ve göster
+    st.write("Temel İstatistikler:", df.describe())
+
+    # Veri tiplerini göster
+    st.write("Veri Tipleri:", df.dtypes)
+
+    # Eksik değerlerin sayısını göster
+    st.write("Eksik Değerlerin Sayısı:", df.isnull().sum())
+
+st.write("Dosya yükleyerek verileriniz üzerinde temel analizler yapabilirsiniz.")
 
